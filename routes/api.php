@@ -49,6 +49,14 @@ Route::post('enviar','CorreosController@mandarCorreos');
 //Activacion de cuenta
 Route::post('activar','AccountsController@insertar');
 
+//subir foto
+Route::post('subirFoto','AccountsController@SaveImage');
+
+Route::post('photoPublic','AccountsController@GuardarArchivo')->middleware('verifica.activacion');
+Route::post('photoPerfil','AccountsController@GuardarArchivoPriv')->middleware('verifica.activacion');
+
+Route::post('dowland','AccountsController@DescargarArchivo');
+
 
 /////////Solo vistas de las tablas
 Route::get('mostrarComent/{id?}',['middleware'=>'verifica.Admin','ComentsController@vista']);

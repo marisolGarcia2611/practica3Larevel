@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
+use App\coments;
 class ComentsSeeder extends Seeder
 {
     /**
@@ -11,6 +12,6 @@ class ComentsSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $coments=factory(App\coments::class,20)->create();
     }
 }

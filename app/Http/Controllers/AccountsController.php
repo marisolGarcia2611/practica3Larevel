@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\accounts;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Mail\Email\exitosaDirect;
 use App\Mail\Email\restriccionDirect;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
+use Illuminate\Validation\ValidationException;
+use App\User;
+use Illuminate\Support\Facades\Hash;
 class AccountsController extends Controller
 {
     /**
@@ -16,11 +21,9 @@ class AccountsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
 
+    
+   
     /**
      * Show the form for creating a new resource.
      *
@@ -60,6 +63,58 @@ class AccountsController extends Controller
            return response()->json("No tienes acceso",400);  
          }
     }
+/*use Illuminate\Http\File;
+    use Illuminate\Support\Facades\Storage;
+    
+    // Automatically generate a unique ID for file name...
+    Storage::putFile('photos', new File('/path/to/photo'));
+    
+    // Manually specify a file name...
+    Storage::putFileAs('photos', new File('/path/to/photo'), 'photo.jpg');
+    
+    Storage::putFile('photos', new File('/path/to/photo'), 'public');
+    
+    */
+
+///subir imagenes a el archivo publico
+    
+    public function SaveImage(Request $request)
+    {
+        if($request->hasFile('file'))
+        {
+        $path=Storage::disk('public')->put('docPublicos/fotosPerfil',$request->file);
+        return response()->json(["SubidaPublica"=>$path],200);
+        }
+        return response()->json(['Ha fallado.'],456);
+    }
+
+
+
+    public function GuardarArchivo(Request $request)
+    {
+        
+        $Archivo=Storage::disk('public')->put('docPublicos/fotosPerfil', $request->file);
+        return response()->json(["ArchivosSubido"=>$Archivo],200);
+    }
+
+    public function GuardarArchivoPriv(Request $request)
+    {
+       
+        $path = Storage::putFileAs('docPublicos/fotosPerfil', $request->file('file'), $request->users()->id.".jpg");
+        
+        return response()->json(["ArchivosSubido"=>$path],200);
+    }
+
+    public function DescargarArchivo($archivo=null)
+    {
+        if($archivo)
+        return Storage::download('docPublicos/fotosPerfil{{$archivo}}');
+    }
+
+
+
+
+
     /**
      * Store a newly created resource in storage.
      *
